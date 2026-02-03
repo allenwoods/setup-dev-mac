@@ -1,0 +1,22 @@
+# Oh-My-Zsh plugins list
+# These plugins are enabled in .zshrc
+# Format: one plugin per line, lines starting with # are comments
+
+# Git integration
+git
+
+# Docker
+docker
+docker-compose
+
+# Python development
+python
+virtualenv
+uv
+
+# Node.js development
+npm
+nvm
+
+# Directory navigation
+z

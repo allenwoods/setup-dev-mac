@@ -1,0 +1,44 @@
+# Solarized Dark color definitions for tmux
+# Reference: https://ethanschoonover.com/solarized/
+
+# Base colors
+# -----------
+# base03  #002b36  (dark background)
+# base02  #073642  (highlight background)
+# base01  #586e75  (comments, secondary content)
+# base00  #657b83  (body text on light bg)
+# base0   #839496  (body text on dark bg)
+# base1   #93a1a1  (optional emphasized content)
+# base2   #eee8d5  (background highlights on light bg)
+# base3   #fdf6e3  (background on light bg)
+
+# Accent colors
+# -------------
+# yellow   #b58900
+# orange   #cb4b16
+# red      #dc322f
+# magenta  #d33682
+# violet   #6c71c4
+# blue     #268bd2
+# cyan     #2aa198
+# green    #859900
+
+# Oh-My-Tmux color mapping
+# ------------------------
+# colour_1  = base03  (dark background)
+# colour_2  = base02  (highlight bg)
+# colour_3  = base01  (secondary text)
+# colour_4  = blue    (accent/active)
+# colour_5  = yellow  (alerts/messages)
+# colour_6  = base03  (status bg)
+# colour_7  = base0   (primary text)
+# colour_8  = base03  (background)
+# colour_9  = yellow  (status left 1)
+# colour_10 = cyan    (status left 2)
+# colour_11 = green   (status left 3)
+# colour_12 = base01  (status right text)
+# colour_13 = base1   (emphasized text)
+# colour_14 = base03  (status right bg)
+# colour_15 = base02  (status right section bg)
+# colour_16 = red     (errors/alerts)
+# colour_17 = base0   (status right text)
