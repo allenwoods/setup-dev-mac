@@ -1,0 +1,7 @@
+# Homebrew Mirror (for users in China)
+# Deployed to $ZSH_CUSTOM/homebrew-mirror.zsh by mac-dev-setup
+#
+# Uncomment the lines below to use Tsinghua University mirror
+
+# export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
+# export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"

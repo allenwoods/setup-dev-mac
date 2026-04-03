@@ -1,0 +1,21 @@
+# Proxy configuration
+# Deployed to $ZSH_CUSTOM/proxy.zsh by mac-dev-setup
+#
+# Replace __PROXY_ADDR__ with your proxy address (e.g., 127.0.0.1:7897)
+
+_set_proxy() {
+    export ALL_PROXY="http://__PROXY_ADDR__"
+    export HTTP_PROXY="$ALL_PROXY"
+    export http_proxy="$ALL_PROXY"
+    export HTTPS_PROXY="$ALL_PROXY"
+    export https_proxy="$ALL_PROXY"
+    echo "All proxy set to $ALL_PROXY"
+}
+
+_unset_proxy() {
+    unset ALL_PROXY HTTP_PROXY http_proxy HTTPS_PROXY https_proxy
+    echo "All proxy unset"
+}
+
+alias setproxy="_set_proxy"
+alias unsetproxy="_unset_proxy"
