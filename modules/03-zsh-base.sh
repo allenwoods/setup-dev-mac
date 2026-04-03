@@ -19,6 +19,12 @@ run_module() {
     # Deploy standard zshrc template
     deploy_zshrc_template
 
+    # Deploy $ZSH_CUSTOM config files
+    deploy_custom_configs
+
+    # Deploy ideavimrc
+    deploy_ideavimrc
+
     log_success "Oh-My-Zsh ready"
 }
 
@@ -127,6 +133,131 @@ update_oh_my_zsh() {
         zsh -c 'source ~/.oh-my-zsh/tools/upgrade.sh' 2>/dev/null || true
         log_success "Oh-My-Zsh updated"
     fi
+}
+
+deploy_custom_configs() {
+    log_substep "Deploying \$ZSH_CUSTOM configs"
+
+    local custom_dir="$HOME/.oh-my-zsh/custom"
+    local configs_custom="$SCRIPT_DIR/configs/custom"
+
+    if [[ ! -d "$configs_custom" ]]; then
+        log_warn "configs/custom/ not found, skipping"
+        return 0
+    fi
+
+    ensure_dir "$custom_dir"
+
+    # Deploy shared configs (.zsh files) directly
+    local f
+    for f in "$configs_custom"/*.zsh; do
+        [[ -f "$f" ]] || continue
+        local basename
+        basename=$(basename "$f")
+        local dest="$custom_dir/$basename"
+
+        if [[ -f "$dest" ]]; then
+            log_debug "$basename already exists in \$ZSH_CUSTOM, skipping"
+            continue
+        fi
+
+        if is_dry_run; then
+            log_info "[DRY-RUN] Would deploy $basename to \$ZSH_CUSTOM/"
+            continue
+        fi
+
+        cp "$f" "$dest"
+        log_substep "Deployed $basename"
+    done
+
+    # Deploy template configs (.zsh.template files) with interactive fill
+    for f in "$configs_custom"/*.zsh.template; do
+        [[ -f "$f" ]] || continue
+        local basename
+        basename=$(basename "$f")
+        local target_name="${basename%.template}"
+        local dest="$custom_dir/$target_name"
+
+        # Skip if already deployed (either as .zsh or .zsh.template)
+        if [[ -f "$dest" ]] || [[ -f "$custom_dir/$basename" ]]; then
+            log_debug "$target_name already exists in \$ZSH_CUSTOM, skipping"
+            continue
+        fi
+
+        if is_dry_run; then
+            log_info "[DRY-RUN] Would deploy $basename to \$ZSH_CUSTOM/"
+            continue
+        fi
+
+        # Detect placeholders
+        local placeholders
+        placeholders=$(grep -oE '__[A-Z_]+__' "$f" | sort -u || true)
+
+        if [[ -z "$placeholders" ]]; then
+            # No placeholders, deploy directly as .zsh
+            cp "$f" "$dest"
+            log_substep "Deployed $target_name"
+            continue
+        fi
+
+        # Interactive fill
+        log_info "Configuring $target_name:"
+        local content
+        content=$(cat "$f")
+        local all_filled=true
+
+        for placeholder in $placeholders; do
+            local var_name="${placeholder//__/}"
+            local user_value=""
+            read -rp "  Enter value for $var_name (or press Enter to skip): " user_value
+
+            if [[ -n "$user_value" ]]; then
+                content="${content//$placeholder/$user_value}"
+            else
+                all_filled=false
+            fi
+        done
+
+        if [[ "$all_filled" == "true" ]]; then
+            echo "$content" > "$dest"
+            log_substep "Deployed $target_name (configured)"
+        else
+            # Save as .template so Oh-My-Zsh won't source it
+            cp "$f" "$custom_dir/$basename"
+            log_substep "Saved $basename (unconfigured — edit and rename to .zsh to activate)"
+        fi
+    done
+
+    log_success "\$ZSH_CUSTOM configs deployed"
+}
+
+deploy_ideavimrc() {
+    log_substep "Deploying ideavimrc"
+
+    local src="$SCRIPT_DIR/configs/ideavimrc"
+    local dest="$HOME/.ideavimrc"
+
+    if [[ ! -f "$src" ]]; then
+        log_debug "configs/ideavimrc not found, skipping"
+        return 0
+    fi
+
+    if [[ -f "$dest" ]] && diff -q "$src" "$dest" &>/dev/null; then
+        log_success "ideavimrc already deployed"
+        return 0
+    fi
+
+    if is_dry_run; then
+        log_info "[DRY-RUN] Would deploy ideavimrc to $dest"
+        return 0
+    fi
+
+    if [[ -f "$dest" ]]; then
+        backup_file "$dest" "before deploying ideavimrc"
+    fi
+
+    cp "$src" "$dest"
+    log_success "ideavimrc deployed"
 }
 
 # Only run if executed directly
