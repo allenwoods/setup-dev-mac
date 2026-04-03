@@ -91,10 +91,14 @@ _mds_custom_edit() {
 
     if [[ -z "$name" ]]; then
         echo "Usage: mds custom edit <name>"
-        echo "Available templates:"
-        for f in "$custom_dir"/*.zsh.template; do
+        echo "Available:"
+        local f
+        for f in "$custom_dir"/*.zsh "$custom_dir"/*.zsh.template; do
             [[ -f "$f" ]] || continue
-            echo "  $(basename "$f" .zsh.template)"
+            local bn=$(basename "$f")
+            [[ "$bn" == "example.zsh" ]] && continue
+            local n="${bn%.zsh.template}"; n="${n%.zsh}"
+            echo "  $n"
         done
         return 1
     fi
@@ -102,8 +106,15 @@ _mds_custom_edit() {
     local template="$custom_dir/${name}.zsh.template"
     local dest="$custom_dir/${name}.zsh"
 
+    # If already activated, open in editor
+    if [[ -f "$dest" ]] && [[ ! -f "$template" ]]; then
+        echo "Opening $name in ${EDITOR:-vi}..."
+        ${EDITOR:-vi} "$dest"
+        return $?
+    fi
+
     if [[ ! -f "$template" ]]; then
-        echo "Template not found: $template"
+        echo "Not found: $name"
         return 1
     fi
 
