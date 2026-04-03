@@ -1,30 +1,37 @@
-# mds — mac-dev-setup CLI helper
+# th — terminal helper CLI
 # Deployed to $ZSH_CUSTOM/mds.zsh by mac-dev-setup
 
-mds() {
+th() {
     local custom_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
     case "${1:-}" in
         custom)
             shift
-            _mds_custom "$@"
+            _th_custom "$@"
+            ;;
+        hint|hints)
+            _th_hints
             ;;
         help|--help|-h|"")
-            _mds_help
+            _th_help
             ;;
         *)
             echo "Unknown command: $1"
-            _mds_help
+            _th_help
             return 1
             ;;
     esac
 }
 
-_mds_help() {
+# Keep mds as alias for backwards compatibility
+alias mds='th'
+
+_th_help() {
     cat <<'EOF'
-Usage: mds <command> [args]
+Usage: th <command> [args]
 
 Commands:
+  hint                     Show custom commands and shortcuts cheatsheet
   custom list              List all $ZSH_CUSTOM configs and status
   custom edit <name>       Fill placeholders in a template and activate it
   custom enable <name>     Activate a .template config (rename to .zsh)
@@ -34,23 +41,66 @@ Commands:
 EOF
 }
 
-_mds_custom() {
+_th_hints() {
+    cat <<'EOF'
+
+  ╭──────────────────────────────────────────────────────────╮
+  │                   Terminal Cheatsheet                     │
+  ╰──────────────────────────────────────────────────────────╯
+
+  ── Editor ──────────────────────────────────────────────────
+  vi / vim              → nvim
+
+  ── Safety ──────────────────────────────────────────────────
+  rm <file>             → trash (moves to Trash, macOS only)
+
+  ── File Search (fzf + Spotlight) ───────────────────────────
+  fopen                 → interactive fuzzy file search + open
+  fopen <word> [ext]    → filtered search (e.g. fopen 2026 docx)
+
+  ── Navigation ──────────────────────────────────────────────
+  z <keyword>           → jump to frecent directory
+  <Tab>                 → fzf-tab fuzzy completion on any command
+
+  ── History (atuin) ─────────────────────────────────────────
+  ↑ / ↓                 → fuzzy search command history
+  Ctrl+R                → atuin full search (if not captured by OS)
+
+  ── Proxy ───────────────────────────────────────────────────
+  setproxy              → enable HTTP/HTTPS proxy
+  unsetproxy            → disable proxy
+
+  ── AI Agents ───────────────────────────────────────────────
+  cc                    → claude
+  ccd                   → claude --permission-mode bypass
+  cx                    → codex
+
+  ── Terminal Helper ─────────────────────────────────────────
+  th hint               → show this cheatsheet
+  th custom list        → list custom configs and status
+  th custom edit <name> → configure or edit a custom config
+  mds                   → alias for th
+
+EOF
+}
+
+_th_custom() {
     local custom_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
     case "${1:-}" in
-        list|ls)    _mds_custom_list "$custom_dir" ;;
-        edit)       _mds_custom_edit "$custom_dir" "${2:-}" ;;
-        enable)     _mds_custom_enable "$custom_dir" "${2:-}" ;;
-        disable)    _mds_custom_disable "$custom_dir" "${2:-}" ;;
-        show|cat)   _mds_custom_show "$custom_dir" "${2:-}" ;;
+        list|ls)    _th_custom_list "$custom_dir" ;;
+        edit)       _th_custom_edit "$custom_dir" "${2:-}" ;;
+        enable)     _th_custom_enable "$custom_dir" "${2:-}" ;;
+        disable)    _th_custom_disable "$custom_dir" "${2:-}" ;;
+        show|cat)   _th_custom_show "$custom_dir" "${2:-}" ;;
         *)
-            echo "Usage: mds custom <list|edit|enable|disable|show> [name]"
+            echo "Usage: th custom <list|edit|enable|disable|show> [name]"
             return 1
             ;;
     esac
 }
 
-_mds_custom_list() {
+_th_custom_list() {
     local custom_dir="$1"
     echo "ZSH_CUSTOM configs ($custom_dir):"
     echo ""
@@ -85,12 +135,12 @@ _mds_custom_list() {
     fi
 }
 
-_mds_custom_edit() {
+_th_custom_edit() {
     local custom_dir="$1"
     local name="$2"
 
     if [[ -z "$name" ]]; then
-        echo "Usage: mds custom edit <name>"
+        echo "Usage: th custom edit <name>"
         echo "Available:"
         local f
         for f in "$custom_dir"/*.zsh "$custom_dir"/*.zsh.template; do
@@ -123,7 +173,7 @@ _mds_custom_edit() {
     placeholders=$(grep -oE '__[A-Z_]+__' "$template" | sort -u)
 
     if [[ -z "$placeholders" ]]; then
-        echo "No placeholders found in $name. Use 'mds custom enable $name' to activate."
+        echo "No placeholders found in $name. Use 'th custom enable $name' to activate."
         return 0
     fi
 
@@ -160,16 +210,16 @@ _mds_custom_edit() {
     else
         echo "$content" > "$template"
         echo "⚠ Some placeholders were skipped. Template updated but not activated."
-        echo "  Run 'mds custom edit $name' again to fill remaining values."
+        echo "  Run 'th custom edit $name' again to fill remaining values."
     fi
 }
 
-_mds_custom_enable() {
+_th_custom_enable() {
     local custom_dir="$1"
     local name="$2"
 
     if [[ -z "$name" ]]; then
-        echo "Usage: mds custom enable <name>"
+        echo "Usage: th custom enable <name>"
         return 1
     fi
 
@@ -200,12 +250,12 @@ _mds_custom_enable() {
     echo "✓ $name activated. Restart shell or run: source $dest"
 }
 
-_mds_custom_disable() {
+_th_custom_disable() {
     local custom_dir="$1"
     local name="$2"
 
     if [[ -z "$name" ]]; then
-        echo "Usage: mds custom disable <name>"
+        echo "Usage: th custom disable <name>"
         return 1
     fi
 
@@ -221,12 +271,12 @@ _mds_custom_disable() {
     echo "✓ $name deactivated. Restart shell to take effect."
 }
 
-_mds_custom_show() {
+_th_custom_show() {
     local custom_dir="$1"
     local name="$2"
 
     if [[ -z "$name" ]]; then
-        echo "Usage: mds custom show <name>"
+        echo "Usage: th custom show <name>"
         return 1
     fi
 
