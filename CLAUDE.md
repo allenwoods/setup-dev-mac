@@ -37,9 +37,9 @@ mac-dev-setup/
 ├── modules/                   # Installation modules (run in order)
 │   ├── 00-preflight.sh        # System checks, Xcode CLI
 │   ├── 01-homebrew.sh         # Homebrew installation
-│   ├── 02-core-tools.sh       # tmux, fzf, zsh plugins, oh-my-posh
+│   ├── 02-core-tools.sh       # tmux, fzf, zsh plugins, oh-my-posh, atuin
 │   ├── 02a-dev-tools.sh       # Optional: uv, node (interactive)
-│   ├── 03-zsh-base.sh         # Oh-My-Zsh + zshrc template deploy
+│   ├── 03-zsh-base.sh         # Oh-My-Zsh + zshrc + $ZSH_CUSTOM deploy
 │   ├── 04-zsh-plugins.sh      # Zsh plugin configuration
 │   ├── 05-oh-my-posh.sh       # Prompt theme (di4am0nd)
 │   ├── 06-tmux.sh             # Oh-My-Tmux + Solarized Dark
@@ -49,7 +49,12 @@ mac-dev-setup/
 ├── configs/                   # Configuration templates
 │   ├── zshrc.template         # Standard zshrc (single source of truth)
 │   ├── tmux.conf.local.template
-│   └── plugins.list
+│   ├── plugins.list
+│   ├── ideavimrc              # Simplified IdeaVim config
+│   └── custom/                # $ZSH_CUSTOM templates
+│       ├── agents.zsh         # Claude/Codex aliases (shared, deployed directly)
+│       ├── proxy.zsh.template # Proxy config (personal, interactive fill)
+│       └── homebrew-mirror.zsh.template  # Homebrew mirror (optional)
 └── themes/
     └── solarized-dark/
         └── tmux.conf.colors
@@ -88,6 +93,7 @@ sudo -u <user> -H bash -c \
 | Claude Code binary | Per-user (`~/.local/bin/claude`) | Native Mach-O build, not npm |
 | Dotfiles | Per-user (from template) | `.zshrc`, `.config/tmux/` |
 | Oh-My-Zsh | Per-user (`~/.oh-my-zsh/`) | Cloned from GitHub |
+| Atuin shell history | Per-user (`~/.local/share/atuin/`) | Synced via atuin account (optional) |
 
 ## Gotchas
 
@@ -117,6 +123,11 @@ Edit `modules/05-oh-my-posh.sh` (`DEFAULT_THEME`) **and** `configs/zshrc.templat
 
 ### Add zsh plugins
 Edit both `modules/04-zsh-plugins.sh` (`DEFAULT_PLUGINS`) **and** `configs/zshrc.template` (`plugins=(...)`).
+
+### Add personal configuration (ZSH_CUSTOM)
+- Shared configs: add `.zsh` file to `configs/custom/`, deployed directly
+- Personal templates: add `.zsh.template` file with `__PLACEHOLDER__` patterns, users fill interactively
+- Deploy with: `./install.sh --module=03-zsh-base`
 
 ### Modify tmux Solarized Dark colors
 Edit `configs/tmux.conf.local.template` — color variables are `tmux_conf_theme_colour_N`.
