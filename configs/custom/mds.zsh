@@ -23,8 +23,6 @@ th() {
     esac
 }
 
-# Keep mds as alias for backwards compatibility
-alias mds='th'
 
 _th_help() {
     cat <<'EOF'
@@ -79,7 +77,6 @@ _th_hints() {
   th hint               → show this cheatsheet
   th custom list        → list custom configs and status
   th custom edit <name> → configure or edit a custom config
-  mds                   → alias for th
 
 EOF
 }
