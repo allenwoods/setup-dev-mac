@@ -56,6 +56,12 @@ verify_installation() {
         failed=$((failed + 1))
     fi
 
+    if verify_tool "atuin" "atuin --version | awk '{print \$2}'"; then
+        passed=$((passed + 1))
+    else
+        failed=$((failed + 1))
+    fi
+
     # Check Oh-My-Zsh
     if [[ -d "$HOME/.oh-my-zsh" ]]; then
         echo -e "  ${GREEN}✓${RESET} oh-my-zsh: installed"

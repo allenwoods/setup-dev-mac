@@ -15,6 +15,8 @@ CORE_FORMULAS=(
     "zsh-autosuggestions"
     "zsh-syntax-highlighting"
     "oh-my-posh"
+    "atuin"
+    "trash"
 )
 
 run_module() {

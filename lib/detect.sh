@@ -95,6 +95,14 @@ detect_uv() {
     return 1
 }
 
+detect_atuin() {
+    if command_exists atuin; then
+        atuin --version | awk '{print $2}'
+        return 0
+    fi
+    return 1
+}
+
 # ============================================================================
 # Configuration Detection
 # ============================================================================
@@ -240,7 +248,7 @@ print_detection_summary() {
 
     echo -e "\n${BOLD}Core Tools:${RESET}"
     local tool version
-    for tool in homebrew zsh tmux fzf; do
+    for tool in homebrew zsh tmux fzf atuin; do
         if version=$(detect_$tool 2>/dev/null); then
             echo -e "  $tool: ${GREEN}$version${RESET}"
         else
