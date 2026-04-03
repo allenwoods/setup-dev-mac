@@ -1,0 +1,26 @@
+" Simplified IdeaVim configuration
+" Deployed to ~/.ideavimrc by mac-dev-setup
+
+" --- Basic settings ---
+set number
+set relativenumber
+set scrolloff=5
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set showmode
+
+" --- System clipboard ---
+set clipboard+=unnamedplus
+
+" --- IdeaVim plugins ---
+set surround
+set highlightedyank
+
+" --- Key mappings ---
+" Y yanks to end of line (consistent with D, C)
+nnoremap Y y$
+
+" Clear search highlight
+nnoremap <Esc> :nohlsearch<CR>
