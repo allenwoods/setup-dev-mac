@@ -3,6 +3,7 @@
 
 # Claude Code
 alias cc='claude'
+# bypass mode skips all permission prompts — use with caution
 alias ccd='claude --permission-mode bypass'
 export CLAUDE_CODE_NO_FLICKER=1
 

@@ -565,7 +565,7 @@ Remove this line from `~/.zshrc`:
 Remove this line from `~/dotfiles/.zshrc`:
 
 ```bash
-export BW_SESSION="66qBbuoDg/3fFD1QByXJOvZI3K9yPtoUCFNN1eImC3koQSHNkZdazJ8ppZPlV8Z3QWcMhnTX78ufqzBRNBkrmQ=="
+export BW_SESSION="<REDACTED>"
 ```
 
 - [ ] **Step 3: Verify cleanup**

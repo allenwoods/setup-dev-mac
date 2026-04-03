@@ -108,7 +108,9 @@ if [[ "$OSTYPE" == darwin* ]] && command -v trash &>/dev/null; then
 fi
 
 # Atuin — enhanced shell history
-eval "$(atuin init zsh)"
+if command -v atuin &>/dev/null; then
+    eval "$(atuin init zsh)"
+fi
 
 # Oh My Posh configuration (di4am0nd theme)
 eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/di4am0nd.omp.json)"

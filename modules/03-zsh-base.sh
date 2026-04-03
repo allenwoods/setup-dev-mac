@@ -156,14 +156,18 @@ deploy_custom_configs() {
         basename=$(basename "$f")
         local dest="$custom_dir/$basename"
 
-        if [[ -f "$dest" ]]; then
-            log_debug "$basename already exists in \$ZSH_CUSTOM, skipping"
+        if [[ -f "$dest" ]] && diff -q "$f" "$dest" &>/dev/null; then
+            log_debug "$basename already up-to-date in \$ZSH_CUSTOM, skipping"
             continue
         fi
 
         if is_dry_run; then
             log_info "[DRY-RUN] Would deploy $basename to \$ZSH_CUSTOM/"
             continue
+        fi
+
+        if [[ -f "$dest" ]]; then
+            backup_file "$dest" "before updating $basename"
         fi
 
         cp "$f" "$dest"
